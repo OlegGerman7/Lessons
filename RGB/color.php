@@ -2,15 +2,14 @@
 
 class ValueObject
 {
+	private int $red;
+	private int $green;
+	private int $blue;
 
-	private $red;
-	private $green;
-	private $blue;
-
-	public function __construct($red, $green, $blue){
-		$this->red   = $red;
-		$this->green = $green;
-		$this->blue  = $blue;
+	public function __construct(int $red, int $green, int $blue){
+		$this->setRed($red);
+		$this->setGreen($green);
+		$this->setBlue($blue);
 	}
 	
 	public function getRed(){
@@ -23,52 +22,51 @@ class ValueObject
 		return $this->blue;
 	}
 
-	public function setRed($value){
-		if ($value < 0 || $value > 255) :
-			echo 'color not valid';
-		else :
-			$this->red = $value;
-		endif;
-	}
-	public function setGreen($value){
-		if ($value < 0 || $value > 255) :
-			echo 'color not valid';
-		else :
-			$this->green = $value;
-		endif;
-	}
-	public function setBlue($value){
-		if ($value < 0 || $value > 255) :
-			echo 'color not valid';
-		else :
-			$this->blue = $value;
-		endif;
+	public function validation($value)
+	{
+		if ($value < 0 || $value > 255){
+			return 'color not valid';
+		} else {
+			return false;
+		}
 	}
 
-	public function equals($obj1, $obj2){
-		if(is_object($obj1) && is_object($obj2)):
-			if(
-				$obj1->red   === $obj2->red &&
+	public function setRed($value){
+		if ($this->validation($value)){
+			echo $this->validation($value);
+		} else {
+			$this->red = $value;
+		}
+	}
+	public function setGreen($value){
+		if ($this->validation($value)){
+			echo $this->validation($value);
+		} else {
+			$this->green = $value;
+		}
+	}
+	public function setBlue($value){
+		if ($this->validation($value)){
+			echo $this->validation($value);
+		} else {
+			$this->blue = $value;
+		}
+	}
+
+	public function equals(ValueObject $obj1, ValueObject $obj2){
+		return $obj1->red    === $obj2->red &&
 				$obj1->green === $obj2->green &&
-				$obj1->blue  === $obj2->blue
-			):
-				return true;
-			else:
-				return false;
-			endif;
-		endif;
+				$obj1->blue  === $obj2->blue;
 	}
 
 	public static function random(){
 		return new self(rand(0, 255), rand(0, 255), rand(0, 255));
 	}
 
-	public function mix($object){
-		if(is_object($object)):
-			$this->red   = ($this->red + $object->red) / 2;
-			$this->green = ($this->green + $object->green) / 2;
-			$this->blue  = ($this->blue + $object->blue) / 2;
-			return $this;
-		endif;
+	public function mix(ValueObject $object){
+		$this->red   = ($this->red + $object->red) / 2;
+		$this->green = ($this->green + $object->green) / 2;
+		$this->blue  = ($this->blue + $object->blue) / 2;
+		return $this;
 	}
 }
