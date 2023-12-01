@@ -16,33 +16,38 @@ class User
         $this->email = $email;
     }
 
-    public function getAll(){
-
-        try{
-            $this->setName('User');
-            $this->setAge(20);
-            $this->setEmail('user@gmail.com');
-            $this->setTest('Test');
-            return 'Name: ' . $this->name . '<br>' .
-               'Age: ' . $this->age . '<br>' .
-               'Email: ' . $this->email . '<br>';
-        } catch(CustomException $exception) {
-            echo '<h2>' . $exception->getCustomMessage() . '</h2>';
+    public function call(string $name, string $value)
+    {
+        if (method_exists('User', $name)){
+            $this->$name($value);
+        } else {
+            throw new CustomException("Method: $name - not exist");
         }
     }
 
-    public function __call($name, $arguments){
-        throw new CustomException("Method: $name - not exist");
+    public function getAll(){
+        return 'Name: ' . $this->name . '<br>' .
+               'Age: ' . $this->age . '<br>' .
+               'Email: ' . $this->email . '<br>';
     }
 }
-
-$user = new User();
 
 class CustomException extends Exception
 {
     public function getCustomMessage(){
         return $this->message;
     }
+}
+
+$user = new User();
+
+try{
+    $user->call('setName', 'User');
+    $user->call('setAge', '20');
+    $user->call('setEmail', 'user@gmail.com');
+    $user->call('setName1', 'User');
+} catch(CustomException $exception) {
+    echo '<h2>' . $exception->getCustomMessage() . '</h2>';
 }
 
 echo $user->getAll();
